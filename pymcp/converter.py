@@ -1,6 +1,6 @@
 """
-일반 파이썬 함수를 MCP 서버로 변환하는 모듈입니다.
-이 모듈을 사용하여 일반 파이썬 함수를 MCP 서버로 쉽게 변환할 수 있습니다.
+Module for converting regular Python functions to MCP servers.
+This module allows you to easily convert regular Python functions to MCP servers.
 """
 
 import inspect
@@ -15,96 +15,96 @@ from mcp.types import (
 )
 from mcp.server.fastmcp.utilities.types import Image
 
-# 타입 정의
+# Type definitions
 FunctionType = Callable[..., Any]
 McpResultType = Sequence[Union[TextContent, ImageContent, EmbeddedResource]]
 
-# 데코레이터 함수의 타입
+# Type for decorator functions
 F = TypeVar('F', bound=Callable[..., Any])
 
 class PyMCP:
     """
-    일반 파이썬 함수를 MCP 서버로 변환하는 클래스입니다.
-    이 클래스를 사용하여 여러 함수를 하나의 MCP 서버로 결합할 수 있습니다.
+    Class for converting regular Python functions to MCP servers.
+    This class allows you to combine multiple functions into one MCP server.
     """
     
     def __init__(self, name: str = "PyMCP Server", instructions: Optional[str] = None, **kwargs: Any):
         """
-        PyMCP 서버를 초기화합니다.
+        Initialize a PyMCP server.
         
         Args:
-            name: 서버 이름
-            instructions: 서버 사용 지침 (선택 사항)
-            **kwargs: FastMCP에 전달할 추가 설정
+            name: Server name
+            instructions: Server usage instructions (optional)
+            **kwargs: Additional settings to pass to FastMCP
         """
         self.mcp = FastMCP(name=name, instructions=instructions, **kwargs)
         self.functions: Dict[str, FunctionType] = {}
     
     def add_function(self, func: FunctionType, name: Optional[str] = None, description: Optional[str] = None) -> None:
         """
-        일반 파이썬 함수를 MCP 서버에 도구로 추가합니다.
+        Add a regular Python function to the MCP server as a tool.
         
         Args:
-            func: 등록할 파이썬 함수
-            name: 도구 이름 (기본값은 함수 이름)
-            description: 도구 설명 (기본값은 함수 독스트링)
+            func: Python function to register
+            name: Tool name (defaults to function name)
+            description: Tool description (defaults to function docstring)
         """
         func_name = name or func.__name__
-        func_description = description or inspect.getdoc(func) or f"{func_name} 함수"
+        func_description = description or inspect.getdoc(func) or f"Function {func_name}"
         
-        # 함수의 결과를 MCP 호환 형식으로 변환하는 래퍼 함수 생성
+        # Create a wrapper function that converts function results to MCP-compatible format
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> McpResultType:
             result = func(*args, **kwargs)
             return self._convert_to_mcp_format(result)
         
-        # 래퍼 함수를 MCP 도구로 등록
+        # Register the wrapper function as an MCP tool
         self.mcp.add_tool(wrapper, name=func_name, description=func_description)
         self.functions[func_name] = func
     
     def _convert_to_mcp_format(self, result: Any) -> McpResultType:
         """
-        함수 결과를 MCP 호환 형식으로 변환합니다.
+        Convert function result to MCP-compatible format.
         
         Args:
-            result: 변환할 함수 결과
+            result: Function result to convert
             
         Returns:
-            MCP 호환 형식으로 변환된 결과
+            Result converted to MCP-compatible format
         """
-        # 이미 MCP 호환 형식이면 그대로 반환
+        # If already in MCP-compatible format, return as is
         if isinstance(result, (TextContent, ImageContent, EmbeddedResource)) or (
             isinstance(result, list) and all(isinstance(item, (TextContent, ImageContent, EmbeddedResource)) for item in result)
         ):
             return result if isinstance(result, list) else [result]
         
-        # 이미지 객체 처리
+        # Handle image objects
         if isinstance(result, Image):
             return [ImageContent(type="image", data=result.data, mimeType=result.mime_type)]
         
-        # 텍스트로 변환하여 반환
+        # Convert to text and return
         text_result = str(result)
         return [TextContent(type="text", text=text_result)]
     
     def run(self, transport: Literal["stdio", "sse"] = "stdio") -> None:
         """
-        MCP 서버를 실행합니다.
+        Run the MCP server.
         
         Args:
-            transport: 전송 프로토콜 ("stdio" 또는 "sse")
+            transport: Transport protocol ("stdio" or "sse")
         """
         self.mcp.run(transport=transport)
     
     def wrap_function(self, name: Optional[str] = None, description: Optional[str] = None) -> Callable[[F], F]:
         """
-        함수를 MCP 도구로 등록하는 데코레이터입니다.
+        Decorator that registers a function as an MCP tool.
         
         Args:
-            name: 도구 이름 (기본값은 함수 이름)
-            description: 도구 설명 (기본값은 함수 독스트링)
+            name: Tool name (defaults to function name)
+            description: Tool description (defaults to function docstring)
             
         Returns:
-            함수를 MCP 도구로 등록하는 데코레이터
+            Decorator that registers a function as an MCP tool
         """
         def decorator(func: F) -> F:
             self.add_function(func, name=name, description=description)
@@ -118,18 +118,18 @@ def convert_function(func: FunctionType, name: Optional[str] = None,
                     instructions: Optional[str] = None,
                     **kwargs: Any) -> PyMCP:
     """
-    단일 함수를 MCP 서버로 변환합니다.
+    Convert a single function to an MCP server.
     
     Args:
-        func: 변환할 함수
-        name: 도구 이름 (기본값은 함수 이름)
-        description: 도구 설명 (기본값은 함수 독스트링)
-        server_name: 서버 이름
-        instructions: 서버 사용 지침 (선택 사항)
-        **kwargs: FastMCP에 전달할 추가 설정
+        func: Function to convert
+        name: Tool name (defaults to function name)
+        description: Tool description (defaults to function docstring)
+        server_name: Server name
+        instructions: Server usage instructions (optional)
+        **kwargs: Additional settings to pass to FastMCP
         
     Returns:
-        생성된 PyMCP 인스턴스
+        Created PyMCP instance
     """
     pymcp = PyMCP(name=server_name, instructions=instructions, **kwargs)
     pymcp.add_function(func, name=name, description=description)
@@ -140,26 +140,26 @@ def mcpwrap(name: Optional[str] = None, description: Optional[str] = None,
            server_name: str = "PyMCP Function Server",
            instructions: Optional[str] = None, **kwargs: Any) -> Callable[[F], F]:
     """
-    함수를 MCP 서버로 변환하는 데코레이터입니다.
+    Decorator that converts a function to an MCP server.
     
     Args:
-        name: 도구 이름 (기본값은 함수 이름)
-        description: 도구 설명 (기본값은 함수 독스트링)
-        server_name: 서버 이름
-        instructions: 서버 사용 지침 (선택 사항)
-        **kwargs: FastMCP에 전달할 추가 설정
+        name: Tool name (defaults to function name)
+        description: Tool description (defaults to function docstring)
+        server_name: Server name
+        instructions: Server usage instructions (optional)
+        **kwargs: Additional settings to pass to FastMCP
         
     Returns:
-        함수를 받아 MCP 서버로 변환하는 데코레이터
+        Decorator that takes a function and converts it to an MCP server
     """
     def decorator(func: F) -> F:
-        # 함수 속성에 MCP 서버 생성 함수 추가
+        # Add MCP server creation function to function attributes
         setattr(func, '_pymcp_convert', lambda: convert_function(
             func, name=name, description=description,
             server_name=server_name, instructions=instructions, **kwargs
         ))
         
-        # 함수 속성에 실행 함수 추가
+        # Add run function to function attributes
         setattr(func, 'serve_mcp', lambda transport="stdio": convert_function(
             func, name=name, description=description,
             server_name=server_name, instructions=instructions, **kwargs

@@ -1,4 +1,4 @@
-# Python 관련
+# Python related
 __pycache__/
 *.py[cod]
 *$py.class
@@ -20,22 +20,23 @@ wheels/
 .installed.cfg
 *.egg
 
-# 가상 환경
+# Virtual environments
 .env
 .venv
 env/
 venv/
 ENV/
 
-# IDE 관련
+# IDE related
 .idea/
 .vscode/
 *.swp
 *.swo
 
-# 운영체제 관련
+# OS related
 .DS_Store
 Thumbs.db
 
-# 프로젝트 특정
+# Project specific
 python-sdk/ 
+tavily-mcp-server/
