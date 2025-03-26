@@ -40,4 +40,4 @@ Thumbs.db
 # Project specific
 python-sdk/ 
 tavily-mcp-server/
-*.py
+setup_cursor.py
