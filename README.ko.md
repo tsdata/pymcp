@@ -4,6 +4,8 @@
 
 파이썬 함수를 MCP(Model Context Protocol) 서버로 변환하는 도구입니다.
 
+**Copyright (c) 2024 Pandas-Studio (ontofinance@gmail.com)**
+
 ---
 
 <a name="korean"></a>
@@ -371,7 +373,7 @@ python examples/setup_langchain_server.py
 
 ### 라이선스
 
-MIT
+[MIT](LICENSE) © 2025 Pandas-Studio (ontofinance@gmail.com)
 
 ### 기여하기
 

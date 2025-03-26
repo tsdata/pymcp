@@ -4,6 +4,8 @@
 
 A tool for converting regular Python functions to MCP (Model Context Protocol) servers.
 
+**Copyright (c) 2024 Pandas-Studio (ontofinance@gmail.com)**
+
 ---
 
 <a name="english"></a>
@@ -371,7 +373,7 @@ python examples/setup_langchain_server.py
 
 ### License
 
-MIT
+[MIT](LICENSE) © 2025 Pandas-Studio (ontofinance@gmail.com)
 
 ### Contributing
 
