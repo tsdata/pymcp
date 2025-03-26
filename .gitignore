@@ -38,6 +38,6 @@ ENV/
 Thumbs.db
 
 # Project specific
-python-sdk/ 
+python-sdk/
 tavily-mcp-server/
 setup_cursor.py
