@@ -4,7 +4,7 @@
 
 A tool for converting regular Python functions to MCP (Model Context Protocol) servers.
 
-**Copyright (c) 2024 Pandas-Studio (ontofinance@gmail.com)**
+**Copyright (c) 2025 Pandas-Studio (ontofinance@gmail.com)**
 
 ---
 

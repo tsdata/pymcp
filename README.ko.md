@@ -4,7 +4,7 @@
 
 파이썬 함수를 MCP(Model Context Protocol) 서버로 변환하는 도구입니다.
 
-**Copyright (c) 2024 Pandas-Studio (ontofinance@gmail.com)**
+**Copyright (c) 2025 Pandas-Studio (ontofinance@gmail.com)**
 
 ---
 
